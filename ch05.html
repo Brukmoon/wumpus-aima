@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 5 Constraint Satisfaction</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 5 · Constraint Satisfaction Problems</h1>
+    <p class="muted">What could be hiding in the squares next to where the agent has been? Each such square is a <b>variable</b> with domain {∅, P, W}. Every breeze or stench, and every <em>missing</em> breeze or stench, is a <b>constraint</b>. It's Minesweeper. Constraint propagation often settles squares with no search at all.</p>
+  </div>
+
+  <div class="panel"><div id="worldpanel"></div></div>
+
+  <div class="panel">
+    <div class="row">
+      <b>Observed squares</b>
+      <button id="obsGoal">Safe exploration (goal-based agent from Ch. 2)</button>
+      <button id="obsStart">Only [1,1]</button>
+      <span class="small muted">or click squares on the grid to add / remove observations (you can't observe a pit or the wumpus)</span>
+    </div>
+    <p class="small muted" id="cspinfo" style="margin:8px 0 0"></p>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h3>The CSP on the grid <span class="hint">remaining domain in each variable</span></h3>
+      <div class="row small" style="margin-bottom:6px"><label><input type="checkbox" id="reveal"> reveal true world</label><label><input type="checkbox" id="edges" checked> show constraints</label></div>
+      <div id="grid"></div>
+      <div class="legend"><span style="--c:var(--breeze)">breeze constraint (dashed = no breeze)</span><span style="--c:var(--stench)">stench constraint (dashed = no stench)</span><span style="--c:var(--gold)">constraint in focus</span></div>
+    </div>
+    <div class="panel">
+      <div id="tabs"></div>
+      <div id="opts" class="row small" style="margin-bottom:8px"></div>
+      <div id="pseudo"></div>
+    </div>
+  </div>
+
+  <div id="player"></div>
+  <div class="panel"><p id="msg" style="margin:0;font-weight:600"></p><p id="sub" class="small muted" style="margin:4px 0 0"></p></div>
+
+  <div class="grid2">
+    <div class="panel"><h3 id="lefttitle">Search tree</h3><div id="left"></div></div>
+    <div class="panel"><h3>Constraints</h3><div id="clist" class="kb" style="max-height:360px"></div></div>
+  </div>
+
+  <div class="panel" id="allpanel">
+    <h3>All solutions: what is certain? <span class="hint">and a preview of Chapter 12</span></h3>
+    <div id="allout"></div>
+  </div>
+
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <ol class="questions">
+      <li>Run GAC-3 on the Book Fig. 7.2 world after safe exploration. Which squares are decided by propagation alone? Is that the same set that Chapter 7's DPLL proves?</li>
+      <li>Backtracking with no inference and static ordering against MRV + MAC: compare the size of the search tree in “all solutions” mode.</li>
+      <li>The “at most one wumpus” constraint is <em>global</em>. How does it show up in the constraint graph, and why does it make plain arc consistency weaker than it looks?</li>
+      <li>Solution counting treats every consistent world as equally likely. In the preview table, why do the weighted probabilities differ from the plain fractions? <details><summary>hint</summary>Worlds with fewer pits are more likely when p = 0.2. That's exactly the computation in §12.7.</details></li>
+      <li>Min-conflicts is famous for n-queens. Why does it struggle more here? <details><summary>hint</summary>Look at the plateaus: many assignments violate the same number of constraints.</details></li>
+    </ol>
+  </details>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/core/gtree.js"></script>
+<script src="js/ch02/agents.js"></script>
+<script src="js/ch05/csp.js"></script>
+<script src="js/ch05/page.js"></script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 7 Logical Agents</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 7 · Logical Agents</h1>
+    <p class="muted">The chapter the Wumpus World was made for. A hybrid agent TELLs its knowledge base what it perceives and ASKs it what is safe. Below that, the <b>inference lab</b> answers the same question five ways (model checking, resolution, forward chaining, backward chaining, DPLL), plus WalkSAT, on the KB as it stands at any step.</p>
+  </div>
+
+  <div class="panel"><div id="worldpanel"></div></div>
+
+  <h2 class="section-title"><span class="num">A</span> The hybrid Wumpus agent (Fig. 7.20)</h2>
+  <div class="grid2">
+    <div class="panel">
+      <h3>True world</h3>
+      <div class="row small" style="margin-bottom:6px"><label><input type="checkbox" id="reveal" checked> reveal hazards</label></div>
+      <div id="truegrid"></div>
+    </div>
+    <div class="panel">
+      <h3>What the KB entails <span class="hint">click a square to query it in the lab below</span></h3>
+      <div class="small muted" style="margin-bottom:6px">OK = KB ⊨ ¬P ∧ ¬W · P! / W! = KB ⊨ P / W · ¬P, ¬W = proved absent · ? = not entailed either way · B/S = percepts</div>
+      <div id="kgrid"></div>
+    </div>
+  </div>
+  <div id="player"></div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>Agent program</h3>
+      <div id="hpseudo"></div>
+      <dl class="kv" style="margin-top:10px" id="stepinfo"></dl>
+    </div>
+    <div class="panel">
+      <h3>Knowledge base <span class="hint" id="kbcount"></span></h3>
+      <div class="kb" id="kb"></div>
+      <p class="small muted" style="margin-top:6px">Highlighted: sentences TELLed at this step. Every ASK is a satisfiability check (KB ∧ ¬α unsatisfiable ⇒ KB ⊨ α) done with DPLL. A “cached” answer was refuted by a model of KB found earlier, so no SAT call was needed.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span class="num">B</span> Inference lab <span class="hint small muted">works on the KB at the step selected above</span></h2>
+  <div class="panel">
+    <div class="row">
+      <span>Query α:</span>
+      <select id="qtype">
+        <option value="notP">¬P (no pit at the square)</option>
+        <option value="P">P (pit at the square)</option>
+        <option value="notW">¬W (no wumpus at the square)</option>
+        <option value="W">W (wumpus at the square)</option>
+        <option value="OK">¬P ∧ ¬W (square is OK)</option>
+        <option value="custom">custom sentence…</option>
+      </select>
+      <span>square</span> <b id="qcell"></b>
+      <input type="text" id="qcustom" style="width:320px; display:none" placeholder="e.g. P3,1 ∨ P2,2   or   W1,3 ∧ ¬W2,2">
+      <span class="mono" id="qshow"></span>
+    </div>
+    <div id="labtabs" style="margin-top:10px"></div>
+    <div id="labintro" class="callout" style="margin-bottom:12px"></div>
+    <div class="grid2">
+      <div class="stack">
+        <div id="labgrid"></div>
+        <div id="labextra"></div>
+      </div>
+      <div class="stack">
+        <div id="labpseudo"></div>
+        <div id="labside"></div>
+      </div>
+    </div>
+    <div id="labplayer" style="margin-top:12px"></div>
+    <div id="labresult" style="margin-top:10px"></div>
+  </div>
+
+  <h2 class="section-title"><span class="num">C</span> Why propositional logic doesn't scale</h2>
+  <div class="panel">
+    <p class="small">The KB above covers only the squares the agent visited. The book's full KB has physics sentences for <b>every</b> square. It also has a copy of every fluent (L<sup>t</sup><sub>x,y</sub>, FacingEast<sup>t</sup>, HaveArrow<sup>t</sup>, WumpusAlive<sup>t</sup>) and successor-state axioms for every time step t. Sizes of the atemporal part:</p>
+    <div id="scaling"></div>
+    <p class="small muted" style="margin-top:6px">Chapter 8 writes all of this as a few first-order sentences: ∀s Breezy(s) ⇔ ∃r Adjacent(r, s) ∧ Pit(r).</p>
+  </div>
+
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <ol class="questions">
+      <li>Load the Book Fig. 7.2 world and step to the moment the agent is at [1,2]. Why is the wumpus at [1,3] entailed? Prove it with resolution and with backward chaining. <details><summary>hint</summary>¬S1,1 rules out W1,2 and W2,1; ¬S2,1 rules out W2,2; S1,2 says one of W1,1, W2,2, W1,3 holds.</details></li>
+      <li>In model checking, count the models of KB that make α false. Why does one such model suffice to answer “not entailed”?</li>
+      <li>Forward chaining only derives what a Horn KB allows. Find a situation where DPLL proves a square safe but forward chaining on our Horn rules cannot. <details><summary>hint</summary>Reasoning by cases: “the pit is in [1,3] or [2,2], and either way…” is not Horn.</details></li>
+      <li>DPLL: how many decisions (branches) does a typical ASK need? Most of the work is unit propagation. Why is that for the Wumpus KB?</li>
+      <li>WalkSAT finds <em>some</em> model of the KB, a possible world consistent with everything perceived. Run it with several seeds. What changes between models, and what never changes? (What never changes is exactly what is entailed.)</li>
+      <li>Resolution on the wumpus sub-KB generates many more clauses than on the pit sub-KB. Which KB sentences cause that? Compare the three strategies.</li>
+      <li>Fig. 7.20 prefers a risky step into a square that is not provably unsafe over going home. Try ten random worlds: how often does that kill the agent? Chapter 12 replaces “not provably unsafe” with an actual probability.</li>
+    </ol>
+  </details>
+</div>
+
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/core/logic.js"></script>
+<script src="js/ch02/agents.js"></script>
+<script src="js/ch07/kb.js"></script>
+<script src="js/ch07/page.js"></script>
+</body>
+</html>

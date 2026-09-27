@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 8 First-Order Logic</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 8 · First-Order Logic</h1>
+    <p class="muted">Propositional logic needs one symbol per square: P<sub>1,2</sub>, P<sub>2,1</sub>, … First-order logic talks about <b>objects</b> (squares, the agent, the wumpus), <b>relations</b> (Pit, Adjacent, At) and <b>functions</b> (Home). With quantifiers, one sentence covers every square: ∀s Breezy(s) ⇔ ∃r Adjacent(r, s) ∧ Pit(r). Below, the current world <em>is</em> the model. Type a sentence and see whether it is true in it, and why.</p>
+  </div>
+  <div class="panel"><div id="worldpanel"></div></div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h3>The model <span class="hint">click a square to move the agent (changes At(Agent, ·))</span></h3>
+      <div id="grid"></div>
+    </div>
+    <div class="panel">
+      <h3>Interpretation <span class="hint">what each symbol refers to in this model</span></h3>
+      <div id="interp" class="kb" style="max-height:520px"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Is this sentence true in the model?</h3>
+    <div class="row"><label>examples <select id="preset"></select></label></div>
+    <textarea id="sent" rows="2" style="margin-top:8px"></textarea>
+    <div class="row" style="margin-top:6px"><button id="eval" class="primary">Evaluate</button>
+      <span class="small muted">Write ∀ ∃ ¬ ∧ ∨ ⇒ ⇔ (or forall, exists, ~, &amp;, |, =&gt;, &lt;=&gt;). Variables are lowercase and constants Capitalized. Squares are written [x,y]. Variables x, y, a, b, i, j range over the numbers 1…n; every other variable ranges over the squares.</span></div>
+    <div id="result" style="margin-top:10px"></div>
+  </div>
+  <div id="player"></div>
+  <div class="panel"><p id="msg" style="margin:0;font-weight:600"></p><div id="bindings" class="small" style="margin-top:6px"></div></div>
+
+  <div class="panel">
+    <h3>One FOL sentence = many propositional sentences</h3>
+    <p class="small muted">Grounding replaces each universally quantified variable by every object. Then Adjacent is evaluated and the ∃ is simplified. The results are exactly the propositional sentences Chapter 7 had to write out one by one.</p>
+    <div class="row"><label>axiom <select id="gaxiom"></select></label></div>
+    <div id="ground" style="margin-top:8px"></div>
+  </div>
+
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <ol class="questions">
+      <li>Evaluate ∀s Breezy(s) ⇔ ∃r Adjacent(r, s) ∧ Pit(r). Then use <b>Edit world</b> to add a pit. It stays true, because it is an axiom that holds in every Wumpus world. Now find a sentence that is true in this world but not in others. That is a fact, not an axiom.</li>
+      <li>Write “there is exactly one wumpus” in FOL. <details><summary>hint</summary>∃s At(Wumpus, s) ∧ ∀r At(Wumpus, r) ⇒ r = s</details></li>
+      <li>Why is ∀s Pit(s) ∧ Adjacent(s, [1,1]) almost certainly false, and what did the writer probably mean? (§8.2.6: ∀ goes with ⇒, ∃ goes with ∧.)</li>
+      <li>Try the “common mistake” example ∃s Pit(s) ⇒ Adjacent(s, [4,4]). Why is it true in almost every world?</li>
+      <li>How does Home(Wumpus) = [1,3] differ from At(Wumpus, [1,3])? Which one lets you write Adjacent(Home(Wumpus), s)?</li>
+    </ol>
+  </details>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/core/fol.js"></script>
+<script src="js/ch08/page.js"></script>
+</body>
+</html>

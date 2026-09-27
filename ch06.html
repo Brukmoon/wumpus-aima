@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 6 Adversarial Search</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 6 · Adversarial Search and Games</h1>
+    <p class="muted">The wumpus wakes up. In this <b>wumpus hunt</b> the map is known and the two sides take turns. The agent (MAX) moves or shoots its one arrow, and wins by bringing the gold back to [1,1]. The wumpus (MIN) moves or stays, and wins by catching the agent. Utilities: win = 1000 − moves − 10 if the arrow was used, loss = −1000, draw after 40 moves = 0.</p>
+  </div>
+  <div class="panel"><div id="worldpanel"></div></div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h3>The game</h3>
+      <div id="grid"></div>
+      <p class="small" id="gstate" style="margin:8px 0 0"></p>
+    </div>
+    <div class="panel stack">
+      <div class="row">
+        <label>agent <select id="who"><option value="ai">AI</option><option value="human">you</option></select></label>
+        <label>wumpus <select id="wai"><option value="ai">AI (same algorithm)</option><option value="random">random</option></select></label>
+      </div>
+      <div class="row">
+        <label>algorithm <select id="algo"><option value="alphabeta">alpha–beta</option><option value="minimax">minimax</option><option value="expecti">expectiminimax (wumpus random)</option><option value="mcts">Monte Carlo tree search</option></select></label>
+        <label id="dw">depth <input id="depth" type="number" min="1" max="7" value="4"></label>
+        <label id="ow"><input type="checkbox" id="order"> move ordering</label>
+        <label id="iw">iterations <input id="iters" type="number" min="10" max="3000" step="50" value="300"></label>
+      </div>
+      <div class="row">
+        <button id="next" class="primary">Next move</button>
+        <button id="auto">Play to the end</button>
+        <button id="restart">↺ Restart</button>
+      </div>
+      <div class="row" id="human" style="display:none">
+        <span class="small muted">your move:</span>
+        <button data-m="N">↑</button><button data-m="S">↓</button><button data-m="W">←</button><button data-m="E">→</button>
+        <button data-m="ShootN">shoot ↑</button><button data-m="ShootS">shoot ↓</button><button data-m="ShootW">shoot ←</button><button data-m="ShootE">shoot →</button>
+      </div>
+      <div class="log" id="hist"></div>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span class="num">🧠</span> How the last decision was made</h2>
+  <div class="grid2">
+    <div class="panel">
+      <div id="pseudo"></div>
+      <dl class="kv" id="stats" style="margin-top:10px"></dl>
+    </div>
+    <div class="panel">
+      <p id="msg" style="margin:0 0 6px;font-weight:600"></p>
+      <div id="side"></div>
+    </div>
+  </div>
+  <div id="player"></div>
+  <div class="panel">
+    <h3 id="treetitle">Game tree</h3>
+    <div id="tree"></div>
+    <div class="legend"><span style="--c:var(--accent)">▲ MAX (agent)</span><span style="--c:var(--wumpus)">▼ MIN (wumpus)</span><span style="--c:var(--breeze)">● chance</span><span style="--c:var(--muted)">■ leaf (terminal or EVAL)</span><span style="--c:var(--danger)">dashed: pruned by alpha–beta</span><span style="--c:var(--gold)">chosen line</span></div>
+  </div>
+
+  <div class="panel">
+    <h3>How much does alpha–beta save? <span class="hint">from the current position</span></h3>
+    <div class="row"><button id="cmp">Compare node counts at depths 1–6</button></div>
+    <div id="cmpout" style="margin-top:8px"></div>
+  </div>
+
+  <div class="panel">
+    <h3>Evaluation function (§6.3)</h3>
+    <p class="small mono">EVAL(s) = (has gold ? 400 − 30·dist(agent, [1,1]) : 200 − 30·dist(agent, gold)) − (wumpus adjacent ? 300 : wumpus at distance 2 ? 80 : 0) + (wumpus dead ? 150 : 0) + (arrow ? 20 : 0) − moves</p>
+    <p class="small muted">A cutoff search trusts EVAL at the frontier. Look for moves the agent makes because EVAL misjudges a position. That's the horizon effect.</p>
+  </div>
+
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <ol class="questions">
+      <li>With alpha–beta, turn move ordering on and off in the comparison. How close does ordering get to the ideal O(b<sup>m/2</sup>)?</li>
+      <li>Play as the agent against the minimax wumpus. Can you ever win on a 4×4 without the arrow? Why does the wumpus sometimes just “Stay”?</li>
+      <li>Switch to expectiminimax. The agent now assumes a random wumpus. Does it take more risks? What happens when the real wumpus is the minimax one?</li>
+      <li>MCTS: how many iterations does it need to agree with alpha–beta's move? Watch the visit counts concentrate on the best move.</li>
+      <li>Depth 2 and depth 5 give different moves in some positions. Find one and explain it with EVAL.</li>
+    </ol>
+  </details>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/core/gtree.js"></script>
+<script src="js/ch06/game.js"></script>
+<script src="js/ch06/page.js"></script>
+</body>
+</html>

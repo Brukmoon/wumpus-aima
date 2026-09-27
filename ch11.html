@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 11 Automated Planning</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 11 · Automated Planning</h1>
+    <p class="muted">Chapter 3 searched a hand-coded state space. Classical planning describes the same problem in a <b>factored</b> language (PDDL): states are sets of fluents, and actions have preconditions and effects. That structure makes <em>domain-independent</em> heuristics, backward search and SAT encodings possible.</p>
+  </div>
+  <div class="panel"><div id="worldpanel"></div></div>
+  <div class="panel">
+    <h3>The planning problem in PDDL <span class="hint" id="pcount"></span></h3>
+    <pre class="proof" id="pddl" style="white-space:pre"></pre>
+  </div>
+  <div id="tabs"></div>
+  <div class="callout" id="intro"></div>
+  <div id="content"></div>
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <ol class="questions">
+      <li>Forward search: compare nodes expanded with h = 0, h_max and h_FF. Which heuristic is admissible? Does h_FF still find the cheapest plan?</li>
+      <li>Why does the delete relaxation underestimate so badly here? <details><summary>hint</summary>Ignoring “¬At(from)”, the agent never leaves [1,1], so the relaxed plan can Climb right after Grab: the whole return trip is ignored.</details></li>
+      <li>Backward search only considers <em>relevant</em> actions. Look at the branching factor at the root (goal Out): why is it 1?</li>
+      <li>SATPlan: how does the number of clauses grow with T? Which axioms dominate: successor-state or action exclusion?</li>
+      <li>The hierarchical view groups primitive actions under Navigate and FetchGold. How would a planner that <em>starts</em> from DoMission and refines it (HTN planning) avoid searching over irrelevant move orders?</li>
+    </ol>
+  </details>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/core/treeview.js"></script>
+<script src="js/core/logic.js"></script>
+<script src="js/ch03/search.js"></script>
+<script src="js/ch11/planning.js"></script>
+<script src="js/ch11/page.js"></script>
+</body>
+</html>

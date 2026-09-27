@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 9 FOL Inference</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 9 · Inference in First-Order Logic</h1>
+    <p class="muted">The Chapter 7 inference procedures, lifted to first-order logic. The key new step is <b>unification</b>: finding a substitution θ that makes two sentences identical. The KB below is a handful of first-order rules about the Wumpus World plus ground facts from the squares the agent has observed.</p>
+  </div>
+  <div class="panel"><div id="worldpanel"></div></div>
+  <div class="panel">
+    <div class="row"><b>Observed squares</b><button id="obsGoal">Safe exploration (goal-based agent)</button><button id="obsStart">Only [1,1]</button><span class="small muted">or click squares to add/remove</span></div>
+    <details style="margin-top:8px"><summary class="small">The first-order KB (definite clauses)</summary><div id="kbtext" class="kb" style="margin-top:6px"></div></details>
+  </div>
+  <div id="tabs"></div>
+  <div class="callout" id="intro"></div>
+  <div class="grid2">
+    <div class="panel stack">
+      <div id="inputs"></div>
+      <div id="grid"></div>
+    </div>
+    <div class="panel stack">
+      <div id="pseudo"></div>
+      <div id="side"></div>
+    </div>
+  </div>
+  <div id="player"></div>
+  <div class="panel"><p id="msg" style="margin:0;font-weight:600"></p><div id="result" style="margin-top:8px"></div></div>
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <ol class="questions">
+      <li>Unify Knows(John, x) with Knows(x, Elizabeth). Why does it fail, and how does standardizing apart (renaming to x2) fix it?</li>
+      <li>Try P(x, F(x)) against P(F(y), y). Which check stops the infinite term?</li>
+      <li>Forward chaining: how many rounds until nothing new is derived? Which rule does most of the work?</li>
+      <li>Backward chaining on Safe(x) enumerates <em>every</em> safe square. Compare the trace with forward chaining: which one does less irrelevant work for a single query like Safe([2,2])?</li>
+      <li>In the CNF of ∀s Breezy(s) ⇔ ∃r Adjacent(r, s) ∧ Pit(r), what does the Skolem function F1(s) mean in words? <details><summary>hint</summary>“the neighbouring square of s that holds the pit”, a function that picks a witness for each s.</details></li>
+    </ol>
+  </details>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/core/fol.js"></script>
+<script src="js/ch02/agents.js"></script>
+<script src="js/ch09/page.js"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wumpus × AIMA</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <h1>Wumpus × AIMA</h1>
+      <p>Working through <em>Artificial Intelligence: A Modern Approach</em> (Russell &amp; Norvig, 4th ed.) one chapter at a time, using the Wumpus World as a lab for every method in the book.</p>
+      <p class="muted small">Each chapter page shows the same four things: the <b>true world</b>, the <b>agent's view</b>, the <b>algorithm state</b>, and the <b>book's pseudocode</b> with the line that is running highlighted. You can step forward and back (← →, Space). The world you build or generate is shared across chapters.</p>
+    </div>
+    <div id="mini"></div>
+  </div>
+  <div id="parts"></div>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/chapters.js"></script>
+<script>
+(function () {
+  W.topbar('Chapters');
+  const spec = W.loadSpec();
+  new W.GridView(document.getElementById('mini'), { cell: 44 }).draw({ size: spec.size, spec, showHazards: true, showPercepts: false, agent: { x: 1, y: 1, dir: 'E' }, caption: 'Current world (seed ' + spec.seed + ')' });
+
+  const statusLabel = { ready: 'ready', planned: 'planned', later: 'later', info: 'reading only' };
+  document.getElementById('parts').innerHTML = W.PARTS.map(p => `
+    <div class="part"><span class="roman">Part ${p.roman}</span><h2>${W.esc(p.title)}</h2></div>
+    <div class="chapters">${p.chapters.map(c => {
+      const tag = c.status === 'ready' ? 'a' : 'div';
+      const stars = c.fit ? '★'.repeat(c.fit) + '☆'.repeat(3 - c.fit) : '';
+      return `<${tag} class="ch ${c.status === 'ready' || c.status === 'planned' ? '' : 'dim'}" ${c.status === 'ready' ? `href="${c.page}"` : ''}>
+        <span class="num">Chapter ${c.n}</span>
+        <h3>${W.esc(c.title)}</h3>
+        <p>${W.esc(c.idea || '')}</p>
+        <div class="meta"><span class="status ${c.status}">${statusLabel[c.status]}</span>${stars ? `<span class="stars" title="How naturally the Wumpus World fits this chapter">${stars}</span>` : ''}</div>
+      </${tag}>`;
+    }).join('')}</div>`).join('');
+})();
+</script>
+</body>
+</html>

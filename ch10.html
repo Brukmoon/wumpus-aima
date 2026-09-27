@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 10 Knowledge Representation</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 10 · Knowledge Representation</h1>
+    <p class="muted">What should an agent's knowledge be <em>about</em>? This chapter covers <b>categories</b> of objects, <b>events and time</b>, <b>reasoning with defaults</b> that may have to be retracted, and <b>knowledge about knowledge</b>. Each gets a lab in the Wumpus World.</p>
+  </div>
+  <div class="panel"><div id="worldpanel"></div></div>
+  <div id="tabs"></div>
+  <div class="callout" id="intro"></div>
+  <div id="content"></div>
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <ol class="questions">
+      <li><b>Ontology.</b> Deadly is inherited by Pit and by Wumpus from Hazard. Why is “a dead wumpus is not deadly” awkward to state in plain FOL, and natural as a default with an exception (§10.6)?</li>
+      <li><b>Events.</b> Count the frame axioms a naive axiomatization would need for this grid, and compare with the number of successor-state axioms. Which fluents change most often?</li>
+      <li><b>Events.</b> At some time t, pick a fluent that holds and explain it with the event-calculus axiom: which event Initiated it, and why wasn't it Clipped since?</li>
+      <li><b>Defaults.</b> Follow the TMS agent. Each retraction happens because a new percept made some square suspicious. Find a step where one percept retracts <em>several</em> assumptions at once.</li>
+      <li><b>Defaults.</b> The agent plans through assumed-safe squares but only <em>steps</em> onto proved-safe ones. What would change if it trusted its defaults when acting?</li>
+      <li><b>Knowledge.</b> Find a square where the truth is “pit” but the agent neither knows it nor knows its negation. How many possible worlds is it considering?</li>
+    </ol>
+  </details>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/core/logic.js"></script>
+<script src="js/ch02/agents.js"></script>
+<script src="js/ch05/csp.js"></script>
+<script src="js/ch07/kb.js"></script>
+<script src="js/ch10/kr.js"></script>
+<script src="js/ch10/page.js"></script>
+</body>
+</html>

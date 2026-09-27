@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 3 Search</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 3 · Solving Problems by Searching</h1>
+    <p class="muted">Suppose the agent could see the whole cave: pits, wumpus, gold. What's left is planning, a pure search problem. Most of the work is choosing the <b>state</b>, and each choice gives a different search.</p>
+  </div>
+
+  <div class="panel"><div id="worldpanel"></div></div>
+
+  <div class="panel">
+    <div class="row">
+      <label>Problem <select id="problem"></select></label>
+      <label>Algorithm <select id="algo"></select></label>
+      <label id="hwrap">Heuristic <select id="heur"></select></label>
+      <label id="lwrap">depth limit ℓ <input id="limit" type="number" min="0" value="6"></label>
+    </div>
+    <p class="small muted" id="probinfo" style="margin:8px 0 0"></p>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h3>World &amp; search progress <span class="hint">hover a square</span></h3>
+      <div id="grid"></div>
+      <div class="legend">
+        <span style="--c:rgba(var(--heat),.7)">expanded (number = how many nodes in that square)</span>
+        <span style="--c:var(--frontier)">frontier</span>
+        <span style="--c:var(--gold)">current node / solution</span>
+        <span style="--c:var(--muted)">path to current node</span>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>Pseudocode</h3>
+      <div id="pseudo" style="max-height:470px"></div>
+    </div>
+  </div>
+
+  <div id="player"></div>
+
+  <div class="panel">
+    <div class="row" style="justify-content:space-between"><h3 style="margin:0">Now</h3><span class="small muted" id="status"></span></div>
+    <p id="msg" style="margin:6px 0 0; font-weight:600"></p>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h3>Search tree <span class="hint">hover a node for its state · click it to see its path</span></h3>
+      <div id="tree"></div>
+      <div class="legend">
+        <span style="--c:var(--accent)">expanded</span><span style="--c:var(--frontier)">frontier (hollow)</span>
+        <span style="--c:var(--gold)">current / solution</span><span style="--c:var(--muted)">popped, not expanded (cutoff/cycle)</span>
+        <span style="--c:transparent;outline:1px dashed var(--muted)">generated, rejected (already reached)</span>
+      </div>
+    </div>
+    <div class="stack">
+      <div class="panel">
+        <h3>Counters</h3>
+        <dl class="kv" id="stats"></dl>
+      </div>
+      <div class="panel">
+        <h3>Frontier <span class="hint" id="forder"></span></h3>
+        <div class="flist" id="flist"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Compare all algorithms on this problem</h3>
+    <div class="row"><button id="compare" class="primary">Run all</button><span class="small muted">Same world, problem and heuristic. d = solution length, b* = effective branching factor (§3.6.1).</span></div>
+    <div id="cmpout" class="scroll" style="margin-top:10px"></div>
+  </div>
+
+  <div class="panel">
+    <h3>Heuristic lab</h3>
+    <p class="small muted">Computes the true cost-to-go h*(s) for <b>every</b> reachable state (Dijkstra backward from the goals), then checks each heuristic. Admissible: h(s) ≤ h*(s). Consistent: h(s) ≤ c(s,a,s′) + h(s′) on every edge.</p>
+    <div class="row"><button id="hcheck" class="primary">Check heuristics</button></div>
+    <div id="hout" class="scroll" style="margin-top:10px"></div>
+  </div>
+
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <h3>Two formulations of the same world</h3>
+    <ul>
+      <li><b>Route:</b> state = (x, y), actions N/E/S/W. At most n² states. Easy to read, but it drops orientation, the gold and the return trip.</li>
+      <li><b>Full mission:</b> state = (x, y, facing, hasGold, hasArrow, wumpusAlive), with the real actuators. At most n²·4·2·2·2 states. Shooting costs 11 (−1 action, −10 arrow). If the wumpus blocks the only corridor, the optimal plan shoots it.</li>
+    </ul>
+    <h3>Questions to try</h3>
+    <ol class="questions">
+      <li>On the mission problem, BFS returns a plan with the fewest <em>actions</em>. When is that not the cheapest plan? <details><summary>hint</summary>Make a world where the wumpus blocks the short corridor: BFS may shoot (1 action, cost 11) while UCS walks around.</details></li>
+      <li>Run IDS and watch the heat map. How many times is [1,1] expanded in total? Why is that still acceptable (§3.4.4)?</li>
+      <li>Depth-first tree-like search on the mission problem can blow up even with a cycle check. Why doesn’t IS-CYCLE stop “TurnLeft, Forward, TurnLeft, TurnLeft, Forward…” loops? <details><summary>hint</summary>IS-CYCLE only checks the current path. Paths that differ in facing are different states.</details></li>
+      <li>Compare A* with “Manhattan tour” and with “+ minimum turns”. Which expands fewer nodes? Is the second one still admissible? Check in the heuristic lab.</li>
+      <li>Use the inadmissible 3× heuristic with A*. Does it still find the optimal cost? Try several seeds.</li>
+      <li>Greedy best-first with Manhattan distance: build a world with a pit wall that makes it take a long detour.</li>
+    </ol>
+  </details>
+</div>
+
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/core/treeview.js"></script>
+<script src="js/ch03/search.js"></script>
+<script src="js/ch03/page.js"></script>
+</body>
+</html>

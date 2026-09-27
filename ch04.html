@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 4 Complex Environments</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 4 · Search in Complex Environments</h1>
+    <p class="muted">Chapter 3 assumed a known, deterministic, fully observable cave. Here we drop those assumptions one at a time. The cave is optimized instead of solved (local search), the floor is slippery (nondeterminism), the agent doesn't know where it is (belief states), and the map is unknown (online search).</p>
+  </div>
+  <div class="panel"><div id="worldpanel"></div></div>
+  <div id="tabs"></div>
+  <div class="callout" id="intro"></div>
+  <div class="grid2">
+    <div class="panel">
+      <h3 id="gridtitle">World</h3>
+      <div class="row small" style="margin-bottom:6px" id="gridopts"></div>
+      <div id="grid"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="panel">
+      <div id="opts" class="row small" style="margin-bottom:10px"></div>
+      <div id="pseudo"></div>
+      <div id="side" style="margin-top:10px"></div>
+    </div>
+  </div>
+  <div id="player"></div>
+  <div class="panel"><p id="msg" style="margin:0;font-weight:600"></p><p id="sub" class="small muted" style="margin:4px 0 0"></p></div>
+  <div class="panel"><h3 id="bottomtitle"></h3><div id="bottom"></div></div>
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <ol class="questions">
+      <li><b>Local search.</b> Hill climbing stops at a local maximum. Compare the best value it finds with random restarts, simulated annealing and the GA over a few seeds. Which has the most consistent results?</li>
+      <li><b>Local search.</b> The objective (optimal plan cost) is flat for most moves, which gives plateaus. What does that do to steepest-ascent hill climbing?</li>
+      <li><b>AND-OR.</b> Add ice squares next to pits (click in ice mode). When does a conditional plan stop existing, even though an optimistic plan would usually work? <details><summary>hint</summary>AND-OR demands success for <em>every</em> outcome. A slide into a pit is an outcome.</details></li>
+      <li><b>AND-OR.</b> Why can't this algorithm return a plan like “keep trying until you stop sliding” (§4.3.3, cyclic solutions)?</li>
+      <li><b>Belief states.</b> Which percepts collapse the belief state fastest? Find a world where localization is impossible because two positions look identical from everywhere reachable.</li>
+      <li><b>Online.</b> Compare the number of moves of online DFS and LRTA* with the optimal path length (the competitive ratio). Run LRTA* for several trials: does it converge to the optimal route?</li>
+    </ol>
+  </details>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/core/gtree.js"></script>
+<script src="js/ch03/search.js"></script>
+<script src="js/ch04/complex.js"></script>
+<script src="js/ch04/page.js"></script>
+</body>
+</html>

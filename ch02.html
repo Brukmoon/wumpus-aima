@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 2 Intelligent Agents</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 2 · Intelligent Agents</h1>
+    <p class="muted">The same world with five agent programs, from a memoryless reflex agent to one that weighs risk against reward. Watch where each one fails. Then play it yourself with only the percepts to go on.</p>
+  </div>
+
+  <div class="panel"><div id="worldpanel"></div></div>
+
+  <div class="panel">
+    <div class="row" id="agentbar"></div>
+    <div class="row small" id="uopts" style="margin-top:8px; display:none">
+      <label title="Utility the agent assumes it gains by continuing to explore">V (value of exploring) <input id="optV" type="number" step="50" value="500"></label>
+      <span class="muted">A risky step is taken only if (1−risk)·V − risk·1000 − cost beats going home.</span>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h3>True world <span class="hint">what the environment knows</span></h3>
+      <div class="row small" style="margin-bottom:6px">
+        <label><input type="checkbox" id="reveal" checked> reveal hazards</label>
+        <label><input type="checkbox" id="fields"> show breeze / stench fields</label>
+      </div>
+      <div id="truegrid"></div>
+      <div class="legend"><span style="--c:var(--pit)">pit</span><span style="--c:var(--wumpus)">wumpus</span><span style="--c:var(--gold)">gold</span><span style="--c:var(--accent)">agent</span></div>
+    </div>
+    <div class="panel">
+      <h3>Agent’s view <span class="hint">what the agent program knows</span></h3>
+      <div class="small muted" style="margin-bottom:6px">B/S/G = breeze/stench/glitter perceived there · OK = inferred safe · P? W? = possible pit / wumpus</div>
+      <div id="agentgrid"></div>
+      <p class="small muted" id="notes" style="margin-top:8px"></p>
+    </div>
+  </div>
+
+  <div id="player"></div>
+  <div id="manualbar" class="player" style="display:none">
+    <button data-m="Forward">↑ Forward</button><button data-m="TurnLeft">← TurnLeft</button><button data-m="TurnRight">→ TurnRight</button>
+    <button data-m="Grab">G Grab</button><button data-m="Shoot">S Shoot</button><button data-m="Climb">C Climb</button>
+    <button data-m="reset">↺ Restart</button>
+    <span class="small muted">Keyboard: arrows, G, S, C</span>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h3>Percept → action</h3>
+      <div class="lamps" id="lamps"></div>
+      <dl class="kv" style="margin-top:10px">
+        <dt>percept</dt><dd class="mono" id="ptuple"></dd>
+        <dt>action</dt><dd id="action"></dd>
+        <dt>why</dt><dd id="why"></dd>
+        <dt>score</dt><dd id="score"></dd>
+      </dl>
+      <h3 style="margin-top:14px">Agent program <span class="hint">rule that fired is highlighted</span></h3>
+      <ul class="rules" id="rules"></ul>
+      <div id="eutable" style="margin-top:10px"></div>
+    </div>
+    <div class="panel">
+      <h3>Action log</h3>
+      <div class="log" id="log"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Performance measure over many worlds <span class="hint">+1000 gold out, −1000 death, −1 per action, −10 arrow</span></h3>
+    <div class="row"><label>worlds <input id="nworlds" type="number" value="500" min="10" step="100"></label><button id="bench" class="primary">Run all agents</button><span class="small muted">Uses the size and pit probability set above, with seeds 1…N.</span></div>
+    <div id="benchout" style="margin-top:10px"></div>
+  </div>
+
+  <details class="notes" open>
+    <summary>Chapter notes: PEAS and environment properties</summary>
+    <div class="grid2">
+      <div>
+        <h3>PEAS description (§7.2)</h3>
+        <table class="data">
+          <tr><th>Performance</th><td>+1000 climbing out with gold, −1000 death (pit/wumpus), −1 per action, −10 for using the arrow. Episode ends at death or Climb.</td></tr>
+          <tr><th>Environment</th><td>n×n grid of rooms, agent starts at [1,1] facing east. Wumpus and gold uniformly among non-start squares; each non-start square is a pit with probability 0.2.</td></tr>
+          <tr><th>Actuators</th><td>Forward, TurnLeft, TurnRight, Grab, Shoot (one arrow, flies straight), Climb (only at [1,1]).</td></tr>
+          <tr><th>Sensors</th><td>Stench (wumpus adjacent or here), Breeze (pit adjacent), Glitter (gold here), Bump (walked into wall), Scream (wumpus killed).</td></tr>
+        </table>
+      </div>
+      <div>
+        <h3>Task environment properties (§2.3)</h3>
+        <table class="data">
+          <tr><th>Observable?</th><td><b>Partially</b>. Only local percepts, so the agent must remember and infer.</td></tr>
+          <tr><th>Agents</th><td><b>Single</b>. The wumpus is part of the environment. (Ch. 6 makes it an opponent.)</td></tr>
+          <tr><th>Deterministic?</th><td><b>Deterministic</b> dynamics, but the initial world is unknown. (Ch. 4 adds slippery floors.)</td></tr>
+          <tr><th>Episodic?</th><td><b>Sequential</b>. Early moves decide what you can learn later.</td></tr>
+          <tr><th>Static?</th><td><b>Static</b>. Nothing moves while the agent thinks.</td></tr>
+          <tr><th>Discrete?</th><td><b>Discrete</b> states, percepts, actions and time.</td></tr>
+          <tr><th>Known?</th><td><b>Known</b> rules (the agent knows what Forward does), unknown layout.</td></tr>
+        </table>
+      </div>
+    </div>
+    <h3 style="margin-top:14px">Questions to try</h3>
+    <ol class="questions">
+      <li>Why does the simple reflex agent sometimes loop forever? Find a seed where it does, then switch to the randomized version. <details><summary>hint</summary>§2.4.2: randomization escapes infinite loops of a memoryless agent, but it is rarely rational.</details></li>
+      <li>The model-based agent never dies. Why? What does that cost it in the benchmark? <details><summary>hint</summary>It only enters squares it has proved safe. Look at how often it climbs out with nothing.</details></li>
+      <li>Goal-based and model-based agents share the exact same knowledge. Where does the goal-based one save actions?</li>
+      <li>Change V for the utility agent (e.g. 100, 500, 2000) and rerun the benchmark. Plot success% against death% in your head. What is the “right” V?</li>
+      <li>Play yourself on the Book Fig. 7.2 world. After [1,1]→[2,1]→[1,1]→[1,2], can you prove where the wumpus is? That is exactly the inference Chapter 7 automates.</li>
+    </ol>
+  </details>
+</div>
+
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/ch02/agents.js"></script>
+<script src="js/ch02/page.js"></script>
+</body>
+</html>
