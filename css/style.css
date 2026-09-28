@@ -196,3 +196,6 @@ a.ch:hover { border-color: var(--accent); }
 .section-title { margin: 18px 0 0; display: flex; align-items: baseline; gap: 10px; }
 .section-title .num { font-family: var(--mono); color: var(--muted); }
 textarea { font: .85rem var(--mono); color: var(--ink); background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; width: 100%; }
+
+/* ---------- footer ---------- */
+.sitefoot { max-width: 1400px; margin: 0 auto; padding: 18px 16px 40px; border-top: 1px solid var(--line); font-size: .78rem; color: var(--muted); line-height: 1.5; }

@@ -196,6 +196,13 @@
       try { localStorage.setItem('wumpus.theme', root.dataset.theme); } catch (e) { /* ignore */ }
     };
     document.body.prepend(bar);
+    const foot = document.createElement('footer');
+    foot.className = 'sitefoot';
+    foot.innerHTML = `Unofficial learning companion to <em>Artificial Intelligence: A Modern Approach</em>, 4th ed., by Stuart Russell and Peter Norvig (Pearson, 2020).
+      Not affiliated with or endorsed by the authors or the publisher. Pseudocode panels follow the book's figures (also published by the authors at
+      <a href="https://github.com/aimacode/aima-pseudocode">aimacode/aima-pseudocode</a>) and remain the authors' work. Section and figure numbers refer to the 4th edition.
+      Please read the book: this site is meant to be used alongside it, not instead of it.`;
+    document.body.append(foot);
   };
   try { const t = localStorage.getItem('wumpus.theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) { /* ignore */ }
 })(window.W);

@@ -2,7 +2,10 @@
 
 Interactive labs for *Artificial Intelligence: A Modern Approach* (4th ed.), using the Wumpus World as the running example.
 
-Open `index.html` in a browser. No build step, no server, no dependencies; it works from `file://`.
+Open `index.html` in a browser, or use the hosted version: **https://brukmoon.github.io/wumpus-aima/**.
+No build step, no server, no dependencies; it also works from `file://`.
+
+> **Unofficial.** This is a personal learning project, not affiliated with or endorsed by the authors or the publisher of AIMA. It is meant to be used *alongside* the book, not instead of it. See [Attribution](#attribution).
 
 ## Chapters
 
@@ -53,3 +56,12 @@ Plain scripts (not ES modules) sharing one global `W`, so pages load from `file:
 2. Pseudocode is a list of `[lineId, text]` pairs; call `pseudo.highlight(event.line)`.
 3. Reuse `W.WorldPanel` so the chosen world is shared across chapters (stored in localStorage).
 4. Set the chapter's `status: 'ready'` and `page` in `js/chapters.js`.
+
+## Attribution
+
+- **The book.** Stuart Russell and Peter Norvig, *Artificial Intelligence: A Modern Approach*, 4th edition, Pearson, 2020. Chapter titles, section and figure numbers refer to this edition.
+- **Pseudocode.** The pseudocode panels follow the book's figures (e.g. Figs. 3.7, 3.9, 3.12, 4.2, 4.5, 4.8, 4.11, 4.21, 4.24, 5.3, 5.5, 5.8, 6.3, 6.7, 6.11, 7.10, 7.13, 7.15, 7.17, 7.18, 7.20, 9.1, 9.3, 9.6), which the authors also publish at [aimacode/aima-pseudocode](https://github.com/aimacode/aima-pseudocode). That material remains the work of its authors and is reproduced here for educational, non-commercial use with attribution. Some panels are adapted (generalized to n-ary constraints, cutoff tests added, and so on); each adaptation is labelled on its page.
+- **The Wumpus World** is the book's running example (§7.2), itself based on Gregory Yob's 1973 game *Hunt the Wumpus*.
+- **Everything else** (all code, page text, explanations, questions and design) is original to this project and licensed under the MIT License (see `LICENSE`). That license does not cover the book's material.
+
+If you are a rights holder and would like something changed or removed, please open an issue.
