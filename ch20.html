@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 20 Learning Probabilistic Models</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 20 · Learning Probabilistic Models</h1>
+    <p class="muted">Every earlier chapter assumed the pit probability p = 0.2 was known. Where would an agent get such numbers? From data. This chapter learns the <b>parameters</b> of the Wumpus model: from fully observed caves (Bayesian learning), as a classifier (naive Bayes), and from caves where the pits are <b>never seen</b>, only their breezes (EM).</p>
+  </div>
+  <div id="tabs"></div>
+  <div class="callout" id="intro"></div>
+  <div id="content"></div>
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <ol class="questions">
+      <li>Bayesian learning: with a Beta(1,1) prior, how many worlds until the posterior is narrower than ±0.05? What does a strong wrong prior, like Beta(20,2), do early on and later?</li>
+      <li>The maximum-likelihood estimate after one world can be 0. Why is that dangerous for an agent, and how does the Bayesian posterior mean avoid it?</li>
+      <li>Naive Bayes assumes the features are independent given the class. They are not (breezy and calm neighbours are related). Look at the calibration chart: where does that assumption hurt?</li>
+      <li>EM never sees a pit, yet it recovers p. Which information in the breeze maps makes that possible? What would happen if every world had zero breezes?</li>
+      <li>EM's log likelihood never decreases between iterations (§20.3). Check it in the chart. Does EM reach the same answer from p₀ = 0.05 and from p₀ = 0.7?</li>
+    </ol>
+  </details>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/ch02/agents.js"></script>
+<script src="js/core/prob.js"></script>
+<script src="js/core/learn.js"></script>
+<script src="js/ch20/page.js"></script>
+</body>
+</html>

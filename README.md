@@ -22,6 +22,17 @@ No build step, no server, no dependencies; it also works from `file://`.
 | 9 | `ch09.html` | Unification stepper, FOL forward & backward chaining, CNF with Skolemization, resolution with unification |
 | 10 | `ch10.html` | Ontology & inheritance, event calculus timeline, JTMS default reasoning, knowledge vs truth (possible worlds) |
 | 11 | `ch11.html` | PDDL domain, progression & regression planners, relaxed planning graph (h_max, h_FF), SATPlan, hierarchical view |
+| 12 | `ch12.html` | Exact P(pit)/P(wumpus) by frontier enumeration (§12.7, matches Fig. 12.6), a probabilistic agent benchmarked against the logical agent |
+| 13 | `ch13.html` | Bayes net of pits and noisy-OR breezes: exact enumeration, rejection sampling, likelihood weighting, Gibbs sampling, Markov blanket |
+| 14 | `ch14.html` | HMM tracking a wandering wumpus: filtering, forward–backward smoothing, Viterbi, particle filtering |
+| 15 | `ch15.html` | The world generator as a probabilistic program (fixed and open-universe models), rejection sampling and Metropolis–Hastings over traces |
+| 16 | `ch16.html` | Expected utility, risk attitudes and certainty equivalents, a decision network, value of perfect information |
+| 17 | `ch17.html` | Slippery Wumpus MDP: value iteration, policy iteration, simulated episodes, POMDP discussion |
+| 18 | `ch18.html` | Normal-form games from Wumpus stories: pure/mixed Nash equilibria (support enumeration), dominance, Pareto, fictitious play |
+| 19 | `ch19.html` | Decision-tree learning (information gain) on data from played caves, logistic regression, learning curves, overfitting |
+| 20 | `ch20.html` | Beta–Bernoulli learning of the pit probability, naive Bayes with calibration, EM with hidden pits |
+| 21 | `ch21.html` | From-scratch MLP (backprop + Adam) on raw 5×5 windows, receptive fields, comparison with the exact posterior |
+| 22 | `ch22.html` | Q-learning and SARSA (ε-greedy or exploration function) on the Chapter 17 MDP, against value iteration's optimum |
 
 ## Structure
 
@@ -36,6 +47,9 @@ js/core/gtree.js        generic stepped tree renderer (CSP, game, AND-OR trees)
 js/core/ui.js           Player (step/rewind), Pseudo (highlighted pseudocode), WorldPanel, Tabs, sparkline, tooltip
 js/core/logic.js        propositional logic: parser, CNF, TT-ENTAILS, resolution, FC/BC, DPLL (textbook + watched-literal), WalkSAT
 js/core/fol.js          first-order logic: parser, model evaluation, unification, CNF/Skolemization, FC, BC, resolution
+js/core/prob.js         exact pit/wumpus posterior (frontier enumeration), observation panel, probabilistic agent
+js/core/mdp.js          slippery grid MDP: value iteration, policy iteration, simulation
+js/core/learn.js        datasets from played caves, decision trees, naive Bayes, logistic regression
 js/chNN/*.js            chapter-specific algorithms + page wiring
 ```
 
@@ -49,6 +63,10 @@ Plain scripts (not ES modules) sharing one global `W`, so pages load from `file:
 - Ch. 8: variables x, y, a, b, i, j range over numbers, all others over squares (a sorted shorthand).
 - Ch. 9: FOL resolution bounds Skolem-term depth at 3 to keep failures finite.
 - Ch. 11: STRIPS Shoot only hits an adjacent wumpus; SATPlan omits shooting.
+- Ch. 14: the wumpus wanders and a flying sensor drone (which can't be harmed) supplies noisy stench readings.
+- Ch. 16: surviving a step is valued with a single parameter V (a stand-in for the value of continuing).
+- Ch. 17/22: the MDP is fully observable and ends at the gold (+1), a pit or the wumpus (−1); no shooting.
+- Ch. 20 (EM): the learner sees a full breeze map of 3×3 caves, as if from a sensor drone.
 
 ## Adding a chapter
 

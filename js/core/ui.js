@@ -141,6 +141,7 @@
       let start = items[0][0];
       try { const s = storeKey && localStorage.getItem(storeKey); if (s && items.some(i => i[0] === s)) start = s; } catch (e) { /* ignore */ }
       this.cur = start;
+      el.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.t === start));
     }
     set(k) {
       this.cur = k;
@@ -162,6 +163,42 @@
     if (marker != null && marker < n) s += `<circle cx="${X(marker)}" cy="${Y(values[marker])}" r="4" style="fill:var(--gold);stroke:var(--ink)"/>`;
     s += `<text x="${w - 6}" y="${h - 2}" font-size="10" text-anchor="end" style="fill:var(--muted)">${label}</text></svg>`;
     return s;
+  };
+
+  /* Multi-series line chart.
+   * series: [{ values: [..] or [[x, y], ..], color, label, dash, width }]
+   * opts: { w, h, yMin, yMax, xLabel, yLabel, marker (x index), refs: [{ y, label, color }], xMax } */
+  W.chart = function (series, o = {}) {
+    const w = o.w || 560, h = o.h || 200, L = 44, R = 10, T = 10, B = 30;
+    const pts = series.map(s => s.values.map((v, i) => Array.isArray(v) ? v : [i, v]));
+    const all = pts.flat().filter(p => isFinite(p[1]));
+    const xMin = o.xMin != null ? o.xMin : Math.min(0, ...all.map(p => p[0])), xMax = o.xMax != null ? o.xMax : Math.max(1, ...all.map(p => p[0]));
+    let yMin = o.yMin != null ? o.yMin : Math.min(...all.map(p => p[1]), ...(o.refs || []).map(r => r.y));
+    let yMax = o.yMax != null ? o.yMax : Math.max(...all.map(p => p[1]), ...(o.refs || []).map(r => r.y));
+    if (!isFinite(yMin) || !isFinite(yMax)) { yMin = 0; yMax = 1; }
+    if (yMax === yMin) { yMax += 1; yMin -= 1; }
+    const X = x => L + (w - L - R) * (x - xMin) / ((xMax - xMin) || 1), Y = y => T + (h - T - B) * (1 - (y - yMin) / (yMax - yMin));
+    const fmt = v => Math.abs(v) >= 1000 ? (v / 1000).toFixed(1) + 'k' : Math.abs(v) < 10 && v % 1 ? v.toFixed(2) : String(Math.round(v * 10) / 10);
+    let s = `<svg viewBox="0 0 ${w} ${h}" width="100%" style="max-width:${w}px;display:block" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, system-ui, sans-serif">`;
+    for (let k = 0; k <= 4; k++) {
+      const yv = yMin + (yMax - yMin) * k / 4, yy = Y(yv);
+      s += `<line x1="${L}" y1="${yy}" x2="${w - R}" y2="${yy}" style="stroke:var(--line);stroke-width:${k ? 0.5 : 1}"/><text x="${L - 4}" y="${yy + 3}" font-size="10" text-anchor="end" style="fill:var(--muted)">${fmt(yv)}</text>`;
+    }
+    s += `<text x="${L}" y="${h - 4}" font-size="10" style="fill:var(--muted)">${fmt(xMin)}</text><text x="${w - R}" y="${h - 4}" font-size="10" text-anchor="end" style="fill:var(--muted)">${fmt(xMax)}</text>`;
+    if (o.xLabel) s += `<text x="${(L + w - R) / 2}" y="${h - 4}" font-size="10" text-anchor="middle" style="fill:var(--muted)">${o.xLabel}</text>`;
+    for (const r of o.refs || []) s += `<line x1="${L}" y1="${Y(r.y)}" x2="${w - R}" y2="${Y(r.y)}" style="stroke:${r.color || 'var(--muted)'};stroke-dasharray:5 4;stroke-width:1.5"/><text x="${w - R - 2}" y="${Y(r.y) - 3}" font-size="10" text-anchor="end" style="fill:${r.color || 'var(--muted)'}">${r.label || ''}</text>`;
+    pts.forEach((p, i) => {
+      const se = series[i], good = p.filter(q => isFinite(q[1]));
+      if (!good.length) return;
+      if (se.bars) { const bw = Math.max(2, (w - L - R) / (good.length * 1.3)); good.forEach(q => { s += `<rect x="${X(q[0]) - bw / 2}" y="${Y(Math.max(0, q[1]))}" width="${bw}" height="${Math.abs(Y(q[1]) - Y(0))}" style="fill:${se.color};opacity:.8"/>`; }); return; }
+      const d = good.map((q, j) => (j ? 'L' : 'M') + X(q[0]).toFixed(1) + ' ' + Y(q[1]).toFixed(1)).join(' ');
+      if (!se.scatter) s += `<path d="${d}" style="fill:none;stroke:${se.color || 'var(--accent)'};stroke-width:${se.width || 1.8}${se.dash ? ';stroke-dasharray:5 4' : ''}"/>`;
+      if (se.dots) good.forEach(q => { s += `<circle cx="${X(q[0])}" cy="${Y(q[1])}" r="2.5" style="fill:${se.color}"/>`; });
+    });
+    if (o.marker != null) s += `<line x1="${X(o.marker)}" y1="${T}" x2="${X(o.marker)}" y2="${h - B}" style="stroke:var(--gold);stroke-width:1.5"/>`;
+    s += '</svg>';
+    const legend = series.filter(se => se.label).map(se => `<span style="--c:${se.color || 'var(--accent)'}">${se.label}</span>`).join('');
+    return s + (legend ? `<div class="legend">${legend}</div>` : '');
   };
 
   /* Scroll el into view inside its nearest scrollable ancestor only (never scrolls the page). */

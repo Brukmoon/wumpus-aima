@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 15 Probabilistic Programming</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 15 · Probabilistic Programming</h1>
+    <p class="muted">The code that <em>generates</em> random Wumpus worlds is already a probabilistic model. Write it as a <b>probabilistic program</b>, <b>observe</b> the percepts, and a generic inference engine returns a posterior over entire worlds. No Bayes-net diagram is needed. Swapping in a different program, such as an <b>open-universe</b> model where even the <em>number</em> of pits is unknown, needs no change to the inference code.</p>
+  </div>
+  <div class="panel"><div id="worldpanel"></div></div>
+  <div class="panel" id="obspanel"></div>
+  <div class="grid2">
+    <div class="panel">
+      <div class="row" style="margin-bottom:8px">
+        <label>program <select id="model"><option value="A">A: Bernoulli pit per square (book)</option><option value="B">B: open universe, numPits ~ Poisson(λ)</option></select></label>
+        <label id="lw">λ <input id="lambda" type="number" min="0.5" max="10" step="0.5" value="3"></label>
+      </div>
+      <pre class="proof" id="prog" style="white-space:pre"></pre>
+      <div class="row" style="margin-top:8px">
+        <label>rejection samples <input id="nr" type="number" value="20000" step="5000"></label>
+        <label>MCMC steps <input id="nm" type="number" value="20000" step="5000"></label>
+        <label>seed <input id="seed" type="number" value="1"></label>
+        <button id="run" class="primary">Run inference</button>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>Posterior P(pit) from MCMC <span class="hint">click a square to follow its estimate</span></h3>
+      <div id="grid"></div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="panel"><h3>How many pits are there?</h3><div id="hist"></div></div>
+    <div class="panel"><h3>MCMC estimate for the selected square</h3><div id="trace"></div><div id="stats" class="small"></div></div>
+  </div>
+  <div class="panel"><h3>Some worlds from the posterior <span class="hint">MCMC samples, thinned</span></h3><div id="gallery" class="gallery"></div></div>
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <ol class="questions">
+      <li>With program A, compare the MCMC posterior with Chapter 12's exact answer (shown in the table). How many steps until they agree to about 0.01?</li>
+      <li>Rejection sampling just runs the program and throws away every world that contradicts a percept. Why does its acceptance rate collapse as you observe more squares?</li>
+      <li>Program B treats the number of pits as a random variable. After observing many breeze-free squares, how does the posterior over numPits compare with the prior Poisson(λ)?</li>
+      <li>In program B two different traces can describe the same world. Why must the MH move “add a pit” be balanced by “remove a pit”, and what is the Hastings correction for?</li>
+      <li>Which parts of the inference code would change if you added a <em>second</em> wumpus to the program? (Answer: none. That's the point of §15.1.)</li>
+    </ol>
+  </details>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/ch02/agents.js"></script>
+<script src="js/core/prob.js"></script>
+<script src="js/ch15/ppl.js"></script>
+<script src="js/ch15/page.js"></script>
+</body>
+</html>

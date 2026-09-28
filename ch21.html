@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 21 Deep Learning</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 21 · Deep Learning</h1>
+    <p class="muted">Chapter 19 learned from five features a human designed. A neural network gets only the <b>raw</b> 5×5 neighbourhood around a square: for each cell, is it inside the cave, has it been observed, was there a breeze, was there a stench (100 inputs). It must discover useful features in its <b>hidden layer</b> on its own. Everything here, including backpropagation and the Adam optimizer, is written from scratch and trains live in your browser.</p>
+  </div>
+  <div class="panel">
+    <div class="row">
+      <label>hidden units <select id="h"><option value="0">0 (= logistic regression)</option><option value="4">4</option><option value="12" selected>12</option><option value="32">32</option></select></label>
+      <label>learning rate <input id="lr" type="number" value="0.01" step="0.005" min="0.0005"></label>
+      <label>epochs <input id="ep" type="number" value="40" min="1" max="300"></label>
+      <label>training worlds <input id="nw" type="number" value="500" step="100"></label>
+      <button id="train" class="primary">Train</button><button id="stop">Stop</button><span id="status" class="small muted"></span>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="panel"><h3>Loss per epoch <span class="hint">cross-entropy, lower is better</span></h3><div id="loss"></div><div id="acc" class="small"></div></div>
+    <div class="panel"><h3>Network vs exact posterior <span class="hint">each dot: a test square</span></h3><div id="scatter"></div></div>
+  </div>
+  <div class="panel">
+    <h3>What the hidden units look at <span class="hint">first-layer weights on the <b>breeze</b> channel of the 5×5 window · red = positive, blue = negative · centre = the square being judged · ± = sign of the unit's weight to the output</span></h3>
+    <div id="rf" class="gallery"></div>
+  </div>
+  <div class="panel"><div id="worldpanel"></div></div>
+  <div class="panel" id="obspanel"></div>
+  <div class="panel"><h3>Predictions in this world <span class="hint">network P(pit) · small: exact posterior</span></h3><div id="grid"></div></div>
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <ol class="questions">
+      <li>With 0 hidden units the network is logistic regression on raw inputs. What does a hidden layer add, and how much, on this task?</li>
+      <li>Look at the receptive fields. Can you find a unit that responds to “breeze right next to the centre”? One that responds to breezes <em>two</em> squares away?</li>
+      <li>Why can't the network beat the exact posterior's loss, however big it is? What is the exact posterior, in learning terms?</li>
+      <li>Raise the learning rate to 0.2. What happens to the loss curve, and why?</li>
+      <li>The same weights are applied at every square. That is weight sharing, the idea behind convolutional networks (§21.3).</li>
+    </ol>
+  </details>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/ch02/agents.js"></script>
+<script src="js/core/prob.js"></script>
+<script src="js/ch21/nn.js"></script>
+<script src="js/ch21/page.js"></script>
+</body>
+</html>

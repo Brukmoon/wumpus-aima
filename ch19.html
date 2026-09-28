@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 19 Learning from Examples</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 19 · Learning from Examples</h1>
+    <p class="muted">So far a human wrote down how breezes relate to pits. Can an agent <b>learn</b> it from experience? We play many random caves with the safe-exploration agent. Every square left on the frontier becomes a labelled example: a few features describing what was perceived around it, and whether a pit was really there. Then a <b>decision tree</b> is learned from the examples.</p>
+  </div>
+  <div class="panel">
+    <div class="row">
+      <label>training worlds <input id="ntr" type="number" value="300" min="20" step="50"></label>
+      <label>test worlds <input id="nte" type="number" value="300" min="20" step="50"></label>
+      <label>max depth <input id="depth" type="number" value="5" min="0" max="5"></label>
+      <label>min examples to split <input id="minsplit" type="number" value="2" min="1"></label>
+      <button id="learn" class="primary">Generate data &amp; learn</button><span id="status" class="small muted"></span>
+    </div>
+    <p class="small muted" style="margin:6px 0 0">Features: ${features}</p>
+  </div>
+  <div class="grid2">
+    <div class="panel"><h3>The learned tree <span class="hint">ⓘ gain = information gain of the split · counts = pits / examples</span></h3><div id="tree" class="ptree" style="max-height:520px"></div></div>
+    <div class="panel stack"><div id="pseudo"></div><div id="acc"></div></div>
+  </div>
+  <div class="grid2">
+    <div class="panel"><h3>Learning curve</h3><div id="lc"></div></div>
+    <div class="panel"><h3>Overfitting: accuracy vs tree depth</h3><div id="ov"></div></div>
+  </div>
+  <div class="panel"><div id="worldpanel"></div></div>
+  <div class="panel" id="obspanel"></div>
+  <div class="grid2">
+    <div class="panel"><h3>The tree's predictions in this world <span class="hint">✓ / ✗ against the truth</span></h3><div id="grid"></div></div>
+    <div class="panel"><h3>Square by square</h3><div id="sq"></div></div>
+  </div>
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <ol class="questions">
+      <li>Which attribute does the tree test first, and why does it have the highest information gain?</li>
+      <li>The tree can't beat the Bayes-optimal classifier (predict “pit” when the exact posterior exceeds 0.5). Why is that the ceiling for <em>any</em> learner using this information?</li>
+      <li>Watch the overfitting chart. With very few training worlds, which depth is best? And with many?</li>
+      <li>Find the branch that encodes “a breezy neighbour whose only possible culprit is this square”. That is a rule Chapter 7 derived by logic, and the tree has learned it from data.</li>
+      <li>Logistic regression uses the same features but a linear model. Where does it lose to the tree, and why? <details><summary>hint</summary>“calm neighbour ⇒ no pit, whatever else” is an interaction that a linear model over one-hot features can only approximate.</details></li>
+    </ol>
+  </details>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/ch02/agents.js"></script>
+<script src="js/core/prob.js"></script>
+<script src="js/core/learn.js"></script>
+<script src="js/ch19/page.js"></script>
+</body>
+</html>

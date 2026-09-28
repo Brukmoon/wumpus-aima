@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 22 Reinforcement Learning</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 22 · Reinforcement Learning</h1>
+    <p class="muted">The slippery cave of <a href="ch17.html">Chapter 17</a> again, but now the agent <b>doesn't know the model</b>: not the slip probability, and not where the pits or the gold are. It only experiences transitions and rewards, episode after episode, starting from [1,1]. <b>Q-learning</b> learns action values Q(s, a) and, from them, a policy. Chapter 17's value iteration gives the true optimum to compare against.</p>
+  </div>
+  <div class="panel"><div id="worldpanel"></div></div>
+  <div class="panel">
+    <div class="row">
+      <label>algorithm <select id="alg"><option value="q">Q-learning (off-policy)</option><option value="sarsa">SARSA (on-policy)</option></select></label>
+      <label>exploration <select id="exp"><option value="eps">ε-greedy</option><option value="f">exploration function f(u, n)</option></select></label>
+      <label id="epsw">ε <input id="eps" type="number" value="0.2" step="0.05" min="0" max="1"></label>
+      <label id="new">N_e <input id="ne" type="number" value="20" min="1"></label>
+      <label>α <select id="alpha"><option value="decay">60 / (59 + N(s,a))</option><option value="0.1">0.1 constant</option><option value="0.5">0.5 constant</option></select></label>
+      <label>episodes <input id="eps_n" type="number" value="3000" step="500" min="100"></label>
+      <label>seed <input id="seed" type="number" value="1"></label>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <label>living reward <input id="living" type="number" value="-0.04" step="0.02"></label>
+      <label>γ <input id="gamma" type="number" value="0.95" step="0.01" min="0.5" max="0.999"></label>
+      <label>slip <input id="slip" type="number" value="0.2" step="0.05" min="0" max="0.8"></label>
+      <button id="run" class="primary">Learn</button><span id="status" class="small muted"></span>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>Learned greedy policy and max<sub>a</sub> Q(s, a) <span class="hint">small: visits · gold ring: differs from the optimal policy</span></h3>
+      <div id="grid"></div>
+    </div>
+    <div class="panel stack"><div id="pseudo"></div><dl class="kv" id="info"></dl></div>
+  </div>
+  <div id="player"></div>
+  <div class="grid2">
+    <div class="panel"><h3>Value of the learned greedy policy from [1,1]</h3><div id="c1"></div></div>
+    <div class="panel"><h3>Reward per episode <span class="hint">moving average of 100 episodes</span></h3><div id="c2"></div></div>
+  </div>
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <ol class="questions">
+      <li>With ε = 0 (pure greedy) the agent often settles on a poor route forever. Why? This is the exploration–exploitation dilemma (§22.3.1).</li>
+      <li>Switch to the exploration function f(u, n): try each action N_e times, then act greedily. Why does it often get stuck looping near the start here, when ε-greedy does not? <details><summary>hint</summary>After N_e tries it never explores again. In a slippery world the first few tries of a good action can be unlucky (a slide into a pit), and with a decaying α those early estimates take a long time to fix.</details></li>
+      <li>Q-learning vs SARSA with ε-greedy exploration: which one learns the <em>optimal</em> policy, and which one learns a policy that is safer <em>while exploring</em>? Look at squares next to pits.</li>
+      <li>Squares the agent rarely visits keep bad Q-values (look at the visit counts). Does that matter for the policy from [1,1]?</li>
+      <li>A constant α = 0.5 learns fast but never settles. Why does a decaying α(n) converge?</li>
+      <li>This agent needs thousands of episodes, each ending in the gold, a pit or the wumpus. Compare that with the model-based agents of earlier chapters, which knew the rules of the world.</li>
+    </ol>
+  </details>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/core/mdp.js"></script>
+<script src="js/ch22/page.js"></script>
+</body>
+</html>

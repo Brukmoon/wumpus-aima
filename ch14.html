@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 14 Reasoning over Time</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 14 · Probabilistic Reasoning over Time</h1>
+    <p class="muted">Now the wumpus <b>wanders</b>: at each step it stays put or moves to a random pit-free neighbour. A flying sensor drone patrols the cave and reports a <b>noisy</b> stench reading every step. Where is the wumpus <em>now</em> (filtering)? Where <em>was</em> it (smoothing)? What path did it most likely take (Viterbi)? Can a few hundred samples keep track of it (particle filtering)?</p>
+  </div>
+  <div class="panel"><div id="worldpanel"></div></div>
+  <div class="panel">
+    <div class="row">
+      <label>P(stay) <input id="stay" type="number" min="0" max="1" step="0.1" value="0.3"></label>
+      <label>P(stench | wumpus near) <input id="hit" type="number" min="0.5" max="1" step="0.05" value="0.9"></label>
+      <label>P(stench | not near) <input id="fa" type="number" min="0" max="0.5" step="0.05" value="0.1"></label>
+      <label>steps <input id="steps" type="number" min="5" max="200" value="40"></label>
+      <label>particles <input id="np" type="number" min="10" max="5000" step="50" value="200"></label>
+      <label>seed <input id="seed" type="number" value="1"></label>
+      <button id="go" class="primary">Simulate</button>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <div class="row small" style="margin-bottom:6px">
+        <label>show <select id="view"><option value="filter">filtering P(X_t | e_1:t)</option><option value="smooth">smoothing P(X_t | e_1:T)</option><option value="part">particle filter</option></select></label>
+        <label><input type="checkbox" id="truth" checked> true wumpus</label><label><input type="checkbox" id="vit"> Viterbi path</label>
+      </div>
+      <div id="grid"></div>
+      <div class="legend"><span style="--c:var(--danger)">belief (darker = more probable)</span><span style="--c:var(--accent)">drone (the sensor)</span><span style="--c:var(--frontier)">Viterbi: most likely path</span><span style="--c:var(--wumpus)">true wumpus</span></div>
+    </div>
+    <div class="panel stack"><div id="pseudo"></div><dl class="kv" id="info"></dl></div>
+  </div>
+  <div id="player"></div>
+  <div class="panel"><h3>Probability assigned to the true wumpus square</h3><div id="chart"></div><div id="acc" class="small" style="margin-top:6px"></div></div>
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <ol class="questions">
+      <li>Why is smoothing never worse than filtering on average? At which time steps does it help most?</li>
+      <li>Set P(stench | not near) = 0.5, so a stench carries almost no information. What happens to the filter? What about a perfect sensor (0.99 / 0.01)?</li>
+      <li>The Viterbi path is the most likely <em>sequence</em>. Can it pass through a square that the smoothed distribution thinks unlikely at that time? (§14.2.3)</li>
+      <li>Try 20 particles and then 2000. Where does the particle filter lose the wumpus, and why doesn't it recover by itself?</li>
+      <li>This is the same machinery as robot localization (§14.3), with the roles swapped: here the sensor's position is known and the target is hidden.</li>
+    </ol>
+  </details>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/ch14/hmm.js"></script>
+<script src="js/ch14/page.js"></script>
+</body>
+</html>

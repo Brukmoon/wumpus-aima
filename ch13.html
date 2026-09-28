@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 13 Bayesian Networks</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 13 · Probabilistic Reasoning</h1>
+    <p class="muted">The Wumpus World as a <b>Bayesian network</b>: a Pit node for each square, pointing into the Breeze node of each neighbour. The book's breeze sensor is deterministic. Here you can also make it <b>noisy</b> (missed or false breezes) with a noisy-OR CPT, and see how exact inference and three sampling algorithms cope.</p>
+  </div>
+  <div class="panel"><div id="worldpanel"></div></div>
+  <div class="panel" id="obspanel"></div>
+  <div class="panel">
+    <div class="row">
+      <label>sensor detection q <input id="q" type="number" min="0.5" max="1" step="0.05" value="1"></label>
+      <label>false alarm (leak) <input id="leak" type="number" min="0" max="0.5" step="0.05" value="0"></label>
+      <label>samples N <input id="N" type="number" min="100" max="50000" step="500" value="5000"></label>
+      <label>seed <input id="seed" type="number" value="1"></label>
+      <button id="run" class="primary">Run</button>
+    </div>
+    <p class="small muted" style="margin:6px 0 0">CPT: P(Breeze = true | pits) = 1 − (1 − leak) · (1 − q)<sup>number of neighbouring pits</sup>. With q = 1 and leak = 0 this is the book's deterministic sensor. Click a frontier square on the grid to query it.</p>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>The network on the grid</h3>
+      <div id="grid"></div>
+      <div class="legend"><span style="--c:var(--accent)">Breeze node (evidence)</span><span style="--c:var(--frontier)">Pit node (relevant)</span><span style="--c:var(--gold)">query and its Markov blanket</span><span style="--c:var(--line)">irrelevant pit nodes (pruned)</span></div>
+    </div>
+    <div class="panel stack">
+      <div id="summary"></div>
+      <div id="ptabs"></div><div id="pseudo"></div>
+    </div>
+  </div>
+  <div class="panel"><h3>Estimates of P(Pit | evidence) as samples accumulate</h3><div id="chart"></div><div id="table" style="margin-top:8px"></div></div>
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <ol class="questions">
+      <li>With the deterministic sensor, how many samples does rejection sampling accept? Why does it get worse as you observe more squares? <details><summary>hint</summary>The probability of the evidence shrinks exponentially with the number of evidence variables (§13.4.2).</details></li>
+      <li>Likelihood weighting never rejects. Look at the effective sample size: why can it still be poor?</li>
+      <li>Which pit nodes are irrelevant to the query, and why can they be dropped without changing the answer (§13.4)?</li>
+      <li>Identify the Markov blanket of the query node. Gibbs sampling only needs that blanket to resample the node. Why?</li>
+      <li>Make the sensor noisy (q = 0.9, leak = 0.1). How do the exact posteriors change? Do squares that were “certainly safe” stay certain?</li>
+    </ol>
+  </details>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/ch02/agents.js"></script>
+<script src="js/core/prob.js"></script>
+<script src="js/ch13/bn.js"></script>
+<script src="js/ch13/page.js"></script>
+</body>
+</html>

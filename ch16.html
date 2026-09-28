@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 16 Simple Decisions</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 16 · Making Simple Decisions</h1>
+    <p class="muted">Chapter 12 told the agent <em>how likely</em> each square is to kill it. Decision theory tells it <em>what to do</em>: choose the action with <b>maximum expected utility</b>. The utility function also encodes an attitude to risk. And before acting, it asks <b>what information would be worth buying</b>.</p>
+  </div>
+  <div class="panel"><div id="worldpanel"></div></div>
+  <div class="panel" id="obspanel"></div>
+  <div class="panel">
+    <div class="row">
+      <label>V = value of surviving a step into a new square <input id="V" type="number" step="50" value="400"></label>
+      <label>attitude to risk <select id="att"><option value="neutral">risk-neutral U(x) = x</option><option value="averse">risk-averse U(x) = R(1 − e^(−x/R))</option><option value="seeking">risk-seeking U(x) = R(e^(x/R) − 1)</option></select></label>
+      <label id="Rw">risk tolerance R <input id="R" type="number" min="50" step="50" value="500"></label>
+    </div>
+    <p class="small muted" style="margin:6px 0 0">Outcomes are in game points. Dying costs 1000. Going home now is worth 0 (no gold, nothing lost). Surviving a step is worth V, a rough stand-in for “the treasure hunt can continue”.</p>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>The situation <span class="hint">click a square to observe it</span></h3>
+      <div id="grid"></div>
+      <div class="legend"><span style="--c:var(--danger)">risk = P(pit or wumpus)</span><span style="--c:var(--gold)">MEU choice</span></div>
+    </div>
+    <div class="panel stack">
+      <div>
+        <h3>Decision network (§16.5)</h3>
+        <svg viewBox="0 0 520 190" width="100%" style="max-width:520px" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, system-ui, sans-serif" font-size="12">
+          <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--muted)"/></marker></defs>
+          <ellipse cx="70" cy="40" rx="55" ry="20" style="fill:var(--panel-2);stroke:var(--frontier)"/><text x="70" y="44" text-anchor="middle" style="fill:var(--ink)">Pits</text>
+          <ellipse cx="70" cy="140" rx="55" ry="20" style="fill:var(--panel-2);stroke:var(--frontier)"/><text x="70" y="144" text-anchor="middle" style="fill:var(--ink)">Wumpus</text>
+          <ellipse cx="210" cy="40" rx="55" ry="20" style="fill:var(--accent);opacity:.25"/><text x="210" y="44" text-anchor="middle" style="fill:var(--ink)">Breezes</text>
+          <ellipse cx="210" cy="140" rx="55" ry="20" style="fill:var(--accent);opacity:.25"/><text x="210" y="144" text-anchor="middle" style="fill:var(--ink)">Stenches</text>
+          <rect x="170" y="75" width="80" height="30" style="fill:var(--panel-2);stroke:var(--gold);stroke-width:2"/><text x="210" y="95" text-anchor="middle" style="fill:var(--ink)">Action</text>
+          <ellipse cx="340" cy="90" rx="50" ry="20" style="fill:var(--panel-2);stroke:var(--frontier)"/><text x="340" y="94" text-anchor="middle" style="fill:var(--ink)">Outcome</text>
+          <path d="M455 70 L495 90 L455 110 L415 90 Z" style="fill:var(--panel-2);stroke:var(--safe);stroke-width:2"/><text x="455" y="94" text-anchor="middle" style="fill:var(--ink)">U</text>
+          <path d="M125 40 H150" style="stroke:var(--muted);stroke-width:1.5" marker-end="url(#a)"/><path d="M125 140 H150" style="stroke:var(--muted);stroke-width:1.5" marker-end="url(#a)"/>
+          <path d="M115 55 Q250 70 295 82" style="stroke:var(--muted);stroke-width:1.5;fill:none" marker-end="url(#a)"/><path d="M115 125 Q250 110 295 98" style="stroke:var(--muted);stroke-width:1.5;fill:none" marker-end="url(#a)"/>
+          <path d="M250 90 H285" style="stroke:var(--muted);stroke-width:1.5" marker-end="url(#a)"/><path d="M390 90 H410" style="stroke:var(--muted);stroke-width:1.5" marker-end="url(#a)"/>
+          <text x="260" y="180" text-anchor="middle" font-size="11" style="fill:var(--muted)">ovals: chance (shaded = observed) · rectangle: decision · diamond: utility</text>
+        </svg>
+      </div>
+      <div id="eu"></div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="panel"><h3>The utility function</h3><div id="ucurve"></div><p class="small muted">A concave U (risk-averse) values a sure 0 above a gamble with the same expected points. The <b>certainty equivalent</b> of a lottery is the sure amount with the same utility.</p></div>
+    <div class="panel"><h3>Value of perfect information (§16.6)</h3><div id="vpi"></div></div>
+  </div>
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <ol class="questions">
+      <li>With the risk-neutral utility, at what risk does stepping into a square stop being better than going home? Derive it: (1 − r)·V − r·1000 = 0.</li>
+      <li>Switch to risk-averse with a small R. Which squares drop below “go home”? What does the certainty equivalent of a 20% risk look like?</li>
+      <li>Why is VPI never negative (§16.6.3)? Find a square whose VPI is exactly 0 and explain why: the information could not change the decision.</li>
+      <li>A pit detector on the square the agent would choose anyway is sometimes worth less than one on another square. Why?</li>
+      <li>VPI isn't additive: the value of two detectors isn't the sum of their values. Why not?</li>
+    </ol>
+  </details>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/ch02/agents.js"></script>
+<script src="js/core/prob.js"></script>
+<script src="js/ch16/page.js"></script>
+</body>
+</html>

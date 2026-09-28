@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 18 Multiagent Decisions</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .payoff { border-collapse: collapse; margin: 8px 0; }
+  .payoff th, .payoff td { border: 1px solid var(--line); padding: 6px 10px; text-align: center; }
+  .payoff td input { width: 46px; text-align: center; padding: 2px 4px; }
+  .payoff td.ne { background: color-mix(in srgb, var(--gold) 25%, transparent); }
+  .payoff td .br { color: var(--accent); font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 18 · Multiagent Decision Making</h1>
+    <p class="muted">When the outcome depends on what <em>another</em> agent does, “maximize expected utility” needs a model of that agent. Game theory's answer is the <b>Nash equilibrium</b>: a strategy profile in which no player gains by deviating alone. The games below are small Wumpus stories. Edit the payoffs and watch the equilibria move.</p>
+  </div>
+  <div class="panel">
+    <div class="row"><label>game <select id="game"></select></label><button id="reset">↺ reset payoffs</button></div>
+    <p id="story" class="small" style="margin:8px 0 0"></p>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>Payoff matrix <span class="hint">(row payoff, column payoff) · <span class="br">●</span> = best response · gold = pure Nash equilibrium</span></h3>
+      <div id="matrix" class="scroll"></div>
+    </div>
+    <div class="panel"><h3>Analysis</h3><div id="analysis"></div></div>
+  </div>
+  <div class="panel">
+    <h3>Fictitious play <span class="hint">each player best-responds to the other's observed action frequencies</span></h3>
+    <div id="fp"></div>
+    <p class="small muted">In two-player zero-sum games the empirical frequencies converge to an equilibrium. In other games they may cycle or settle on one pure equilibrium.</p>
+  </div>
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <ol class="questions">
+      <li>In “Shoot or dodge”, why must the wumpus mix exactly 50/50? What happens to the hunter's payoff if the wumpus leans left?</li>
+      <li>With a pit on the right, the <em>hunter's</em> payoffs changed, yet the equilibrium shifts the <em>wumpus's</em> mix. Explain with the indifference principle.</li>
+      <li>In the prisoner's dilemma, which outcome is Pareto optimal and which is the equilibrium? What could change if the two hunters met again and again?</li>
+      <li>In the stag hunt, both pure outcomes are equilibria. Which one does fictitious play end up in, and does it depend on the starting point?</li>
+      <li>Edit the chicken game so that colliding costs only −1. How do the equilibria change?</li>
+    </ol>
+  </details>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/ch18/games.js"></script>
+<script src="js/ch18/page.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ch. 17 Complex Decisions</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Chapter 17 · Making Complex Decisions</h1>
+    <p class="muted">A <b>sequential</b> decision problem: the cave is known, but the floor is slippery. Each move goes where intended with probability 1 − slip, otherwise sideways, like the book's 4×3 world. The gold ends the episode with +1, a pit or the wumpus with −1, and every step earns a living reward. The solution is a <b>policy</b>: what to do in <em>every</em> square, because the agent can't be sure where it will end up.</p>
+  </div>
+  <div class="panel"><div id="worldpanel"></div></div>
+  <div class="panel">
+    <div class="row">
+      <label>living reward <input id="living" type="range" min="-1.5" max="0.1" step="0.01" value="-0.04"></label><b id="lv" class="mono"></b>
+      <label>discount γ <input id="gamma" type="number" min="0.5" max="0.999" step="0.01" value="0.95"></label>
+      <label>slip probability <input id="slip" type="number" min="0" max="0.8" step="0.05" value="0.2"></label>
+      <span class="small muted">Try the book's regimes (Fig. 17.2): very negative (the agent hurries, even into a pit), around −0.04 (it detours for safety), and positive (it avoids the exit forever).</span>
+    </div>
+  </div>
+  <div id="tabs"></div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>Utilities U(s) and the policy π(s)</h3>
+      <div id="grid"></div>
+      <div class="row small" style="margin-top:6px"><button id="sim">▶ simulate one episode with this policy</button><span id="simres" class="muted"></span></div>
+    </div>
+    <div class="panel stack"><div id="pseudo"></div><dl class="kv" id="info"></dl></div>
+  </div>
+  <div id="player"></div>
+  <div class="panel"><h3 id="ctitle"></h3><div id="chart"></div></div>
+  <div class="panel">
+    <h3>And the real Wumpus World? A POMDP (§17.4)</h3>
+    <p class="small">Here the agent sees the whole cave. In the real game it doesn't know where the pits are, so the problem is a <b>partially observable</b> MDP. Its “state” is then a <b>belief state</b>, a probability distribution over caves, which is exactly the posterior computed in <a href="ch12.html">Chapter 12</a>. The Chapter 12 agent is a simple, myopic approximation of a POMDP policy. It acts on the current belief without planning how future percepts will change it. A full POMDP solution would also value actions for the information they bring (the <a href="ch16.html">VPI</a> of Chapter 16).</p>
+  </div>
+  <details class="notes">
+    <summary>Chapter notes &amp; questions</summary>
+    <ol class="questions">
+      <li>Set slip = 0. How does the policy relate to the shortest paths of Chapter 3?</li>
+      <li>With slip 0.2 and living reward −0.04, find a square where the policy deliberately walks <em>away</em> from the gold to avoid slipping into a pit.</li>
+      <li>Make the living reward −1.5. Why does the agent now head into a pit from some squares?</li>
+      <li>Value iteration needs many iterations but policy iteration only a handful. Why? What does each policy-iteration step cost?</li>
+      <li>Lower γ to 0.6. Which squares change their policy, and why does a shorter horizon matter?</li>
+    </ol>
+  </details>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/core/mdp.js"></script>
+<script src="js/ch17/page.js"></script>
+</body>
+</html>
