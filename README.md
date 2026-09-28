@@ -11,6 +11,7 @@ No build step, no server, no dependencies; it also works from `file://`.
 
 | Ch. | Page | What's inside |
 |---|---|---|
+| 1 | `intro.html` | Start here: how the Wumpus World works (percept inspector, playable sandbox) and the seven task-environment dimensions (§2.3) with a self-quiz and a table of variants |
 | 2 | `ch02.html` | PEAS, five agent programs (reflex → utility), manual play, benchmark over many worlds |
 | 3 | `ch03.html` | Route / full-mission formulations, BFS, UCS, DFS, DLS, IDS, greedy, A*, weighted A*, search tree, heuristic lab (admissibility & consistency checker) |
 | 4 | `ch04.html` | Local search that designs worlds (HC, restarts, SA, GA), AND-OR search on ice, belief states (localization, sensorless plans), online DFS & LRTA* |

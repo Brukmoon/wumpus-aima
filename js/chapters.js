@@ -4,7 +4,7 @@
   'use strict';
   W.PARTS = [
     { roman: 'I', title: 'Artificial Intelligence', chapters: [
-      { n: 1, title: 'Introduction', status: 'info', fit: 0, idea: 'What AI is, its foundations and history. No lab.' },
+      { n: 1, title: 'Introduction', status: 'ready', page: 'intro.html', fit: 0, idea: 'Start here: how the Wumpus World works (rules, percepts, scoring, try it yourself) and the seven dimensions of task environments (§2.3).' },
       { n: 2, title: 'Intelligent Agents', status: 'ready', fit: 3, page: 'ch02.html', idea: 'PEAS, environment types, and five agent programs (reflex → utility) on the same world. You can also play it yourself.' },
     ] },
     { roman: 'II', title: 'Problem-solving', chapters: [

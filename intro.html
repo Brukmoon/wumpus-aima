@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Start Here: Wumpus World</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .dims { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+  .dim h3 { margin-bottom: 4px; }
+  .dim .pair { font-family: var(--mono); font-size: .8rem; color: var(--muted); margin-bottom: 6px; }
+  .dim .quiz { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+  .dim .answer { display: none; }
+  .dim.answered .answer { display: block; }
+  .dim .quiz button.right { background: var(--safe); color: #fff; border-color: var(--safe); }
+  .dim .quiz button.wrong { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .loop { display: block; max-width: 640px; margin: 8px auto; }
+  table.class td, table.class th { text-align: center; }
+  table.class td:first-child, table.class th:first-child { text-align: left; }
+  .changed { color: var(--accent); font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="wrap stack">
+  <div>
+    <h1>Start here: the Wumpus World and task environments</h1>
+    <p class="muted">Every lab on this site uses the same small world. This page explains how that world works and where it sits among the <b>kinds of task environments</b> an agent can face (AIMA §2.3). The rest of the book is largely about how the right technique depends on the kind of environment.</p>
+  </div>
+
+  <h2 class="section-title"><span class="num">1</span> Agents and environments</h2>
+  <div class="panel">
+    <p>An <b>agent</b> perceives its <b>environment</b> through sensors and acts on it through actuators. At every time step it receives a <b>percept</b>, and its <b>agent program</b> maps the percept history to an <b>action</b>. A <b>performance measure</b> scores the resulting sequence of environment states. The agent is rational if it chooses actions expected to maximize that measure, given what it has perceived and what it knows (§2.2).</p>
+    <svg class="loop" viewBox="0 0 640 196" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, system-ui, sans-serif" font-size="13">
+      <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" style="fill:var(--muted)"/></marker></defs>
+      <rect x="20" y="44" width="230" height="110" rx="12" style="fill:var(--panel-2);stroke:var(--accent);stroke-width:2"/>
+      <text x="135" y="72" text-anchor="middle" font-weight="700" style="fill:var(--ink)">Agent</text>
+      <text x="135" y="98" text-anchor="middle" style="fill:var(--muted)">sensors → agent program</text>
+      <text x="135" y="118" text-anchor="middle" style="fill:var(--muted)">→ actuators</text>
+      <rect x="390" y="44" width="230" height="110" rx="12" style="fill:var(--panel-2);stroke:var(--gold);stroke-width:2"/>
+      <text x="505" y="72" text-anchor="middle" font-weight="700" style="fill:var(--ink)">Environment</text>
+      <text x="505" y="98" text-anchor="middle" style="fill:var(--muted)">the cave: pits, wumpus,</text>
+      <text x="505" y="118" text-anchor="middle" style="fill:var(--muted)">gold, walls</text>
+      <path d="M390 80 H250" style="stroke:var(--muted);stroke-width:2;fill:none" marker-end="url(#ah)"/>
+      <text x="320" y="72" text-anchor="middle" style="fill:var(--ink)">percept</text>
+      <text x="320" y="24" text-anchor="middle" font-size="11" style="fill:var(--muted)">percept = [Stench, Breeze, Glitter, Bump, Scream]</text>
+      <path d="M250 125 H390" style="stroke:var(--muted);stroke-width:2;fill:none" marker-end="url(#ah)"/>
+      <text x="320" y="118" text-anchor="middle" style="fill:var(--ink)">action</text>
+      <text x="320" y="182" text-anchor="middle" font-size="11" style="fill:var(--muted)">action ∈ {Forward, TurnLeft, TurnRight, Grab, Shoot, Climb}</text>
+    </svg>
+  </div>
+
+  <h2 class="section-title"><span class="num">2</span> How the Wumpus World works (§7.2)</h2>
+  <div class="panel"><div id="worldpanel"></div></div>
+  <div class="grid2">
+    <div class="panel">
+      <h3>The cave <span class="hint">click any square to see what the agent would perceive there</span></h3>
+      <div class="row small" style="margin-bottom:6px"><label><input type="checkbox" id="fields" checked> show breeze / stench areas</label></div>
+      <div id="grid"></div>
+    </div>
+    <div class="panel stack">
+      <div>
+        <h3>Percept at <span id="sqname">[1,1]</span></h3>
+        <div class="lamps" id="lamps"></div>
+        <p class="small" id="pexplain" style="margin-top:8px"></p>
+      </div>
+      <table class="data">
+        <tr><th>The cave</th><td>A grid of rooms (4×4 in the book). The agent starts in [1,1], the bottom-left corner, facing east (right). Walls surround the grid.</td></tr>
+        <tr><th>Pits</th><td>Each room except [1,1] has a pit with probability 0.2. Falling in kills the agent.</td></tr>
+        <tr><th>The wumpus</th><td>One wumpus, placed uniformly at random among the rooms other than [1,1]. Entering its room while it lives is fatal. It never moves (except in Chapter 6).</td></tr>
+        <tr><th>Gold</th><td>One heap of gold, placed uniformly at random among the rooms other than [1,1]. It may sit in a pit or under the wumpus, so some worlds can't be won.</td></tr>
+        <tr><th>Arrow</th><td>The agent has exactly one arrow. It flies straight in the direction the agent faces until it hits the wumpus (killing it) or a wall.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h3>Percepts (sensors)</h3>
+      <table class="data">
+        <tr><th>Stench</th><td>in the wumpus's room and the rooms directly (not diagonally) next to it. A dead wumpus still smells.</td></tr>
+        <tr><th>Breeze</th><td>in rooms directly next to a pit</td></tr>
+        <tr><th>Glitter</th><td>in the room where the gold is</td></tr>
+        <tr><th>Bump</th><td>after walking into a wall</td></tr>
+        <tr><th>Scream</th><td>after the arrow kills the wumpus, heard anywhere in the cave</td></tr>
+      </table>
+      <p class="small muted" style="margin-top:6px">The percept is a 5-tuple, e.g. [Stench, Breeze, None, None, None]. The agent never senses its own position: it must keep track of that itself.</p>
+    </div>
+    <div class="panel">
+      <h3>Actions and performance measure</h3>
+      <table class="data">
+        <tr><th>Forward</th><td>move one room ahead (or Bump into a wall)</td></tr>
+        <tr><th>TurnLeft / TurnRight</th><td>rotate 90°</td></tr>
+        <tr><th>Grab</th><td>pick up the gold if it is in this room</td></tr>
+        <tr><th>Shoot</th><td>fire the arrow straight ahead (once)</td></tr>
+        <tr><th>Climb</th><td>leave the cave. Only works in [1,1], and ends the episode</td></tr>
+      </table>
+      <p class="small" style="margin-top:8px"><b>Score:</b> +1000 for climbing out with the gold, −1000 for dying, −1 per action, −10 for using the arrow. The episode ends when the agent dies or climbs out.</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>Try it <span class="hint">you see only what the agent perceives</span></h3>
+    <div class="grid2">
+      <div>
+        <div class="row small" style="margin-bottom:6px"><label><input type="checkbox" id="reveal"> reveal the cave</label></div>
+        <div id="playgrid"></div>
+      </div>
+      <div class="stack">
+        <div class="row">
+          <button data-m="Forward">↑ Forward</button><button data-m="TurnLeft">← Left</button><button data-m="TurnRight">→ Right</button>
+          <button data-m="Grab">Grab</button><button data-m="Shoot">Shoot</button><button data-m="Climb">Climb</button><button data-m="reset">↺ Restart</button>
+        </div>
+        <div class="lamps" id="plamps"></div>
+        <p id="pstatus" class="small"></p>
+        <div class="log" id="plog"></div>
+        <p class="small muted">Keyboard: ↑ ← → G S C. Squares you've visited show what you perceived there (B, S, G). What you <em>conclude</em> is up to you. Chapter 7 turns exactly this reasoning into logic.</p>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title"><span class="num">3</span> Types of task environments (§2.3)</h2>
+  <div class="panel">
+    <p>Before choosing a technique, characterize the <b>task environment</b>. First write its PEAS description (Performance, Environment, Actuators, Sensors). Then place it along the seven dimensions below. The harder side of each dimension (partially observable, multiagent, nondeterministic, sequential, dynamic, continuous, unknown) calls for more machinery. <b>Test yourself:</b> for each dimension, decide where the classic Wumpus World belongs before reading the answer.</p>
+  </div>
+  <div class="dims" id="dims"></div>
+
+  <div class="panel">
+    <h3>Change one assumption, get a different problem</h3>
+    <p class="small muted">Most chapters on this site change the Wumpus World along one of these dimensions, and that change is what calls for the chapter's technique. <span class="changed">Highlighted</span> cells differ from the classic world.</p>
+    <div class="scroll"><table class="data class" id="variants"></table></div>
+  </div>
+
+  <div class="panel">
+    <h3>Where to go next</h3>
+    <ul>
+      <li><a href="ch02.html">Chapter 2</a>: five agent programs, from reflex to utility-based, on this same world.</li>
+      <li><a href="ch03.html">Chapter 3</a>: pretend the cave is fully observable, and it becomes a search problem.</li>
+      <li><a href="ch07.html">Chapter 7</a>: the logical agent the Wumpus World was designed for.</li>
+    </ul>
+  </div>
+</div>
+<script src="js/core/world.js"></script>
+<script src="js/core/gridview.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/ch02/agents.js"></script>
+<script src="js/intro.js"></script>
+</body>
+</html>
